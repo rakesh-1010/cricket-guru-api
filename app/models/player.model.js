@@ -1,34 +1,15 @@
-module.exports = (sequelize, Sequelize) => {
+module.exports = (sequelize, DataTypes) => {
     const Player = sequelize.define("player", {
-      name: {
-        type: Sequelize.STRING
-      },
-      email: {
-        type: Sequelize.STRING
-      },
-      mobile: {
-        type: Sequelize.DOUBLE
-      },
-      dob: {
-        type: Sequelize.DATEONLY
-      },
-      age: {
-        type: Sequelize.INTEGER
-      },
-      gender: {
-        type: Sequelize.STRING
-      },
-      role: {
-        type: Sequelize.STRING
+      name: DataTypes.STRING,
+      email: DataTypes.STRING,
+      mobile: DataTypes.DOUBLE,
+      dob: DataTypes.DATEONLY,
+      age: DataTypes.INTEGER,
+      gender: DataTypes.STRING,
+      role: DataTypes.STRING,
+      batting_style: DataTypes.STRING,
+      bowling_style: DataTypes.STRING
+    }, {});
 
-      },
-      batting_style: {
-        type: Sequelize.STRING
-      },
-      bowling_style: {
-        type: Sequelize.STRING
-      },
-    });
-  
     return Player;
 };

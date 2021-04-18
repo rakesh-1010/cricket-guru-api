@@ -1,5 +1,6 @@
 const db = require("../models");
 const Player = db.players;
+const Skill = db.skills;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Player
@@ -44,7 +45,14 @@ exports.findAll = (req, res) => {
     const name = req.query.name;
     var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
   
-    Player.findAll({ where: condition })
+    Player.findAll({ where: condition,  
+      include: [
+        {
+          model: Skill,
+          as: "skills"
+        },
+      ],
+    })
       .then(data => {
         res.send(data);
       })
@@ -54,6 +62,39 @@ exports.findAll = (req, res) => {
             err.message || "Some error occurred while retrieving players."
         });
       });
+};
+
+exports.addSkills = (req, res) => {
+  
+  req.body.forEach((req) => {
+    const playerId = req.playerId;
+    const skillId = req.skillId;
+    const rating = req.rating;
+    console.log("--------request-------", req.body);
+    return Player.findByPk(playerId)
+      .then((player) => {
+        if (!player) {
+          throw new Error("player not found!");
+          return null;
+        }
+        return Skill.findByPk(skillId).then((skill) => {
+          if (!skill) {
+            console.log("Skill not found!");
+            return null;
+          }
+  
+          player.addSkill(skill);
+          console.log(`>> added skill id=${skill.id} to Player id=${player.id}`);
+          res.send(player);
+        });
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: `>> Error while adding Skill to player:  ${err}`
+        });
+      });
+  })
+  
 };
 
 // Find a single Player with an id

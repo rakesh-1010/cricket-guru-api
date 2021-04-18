@@ -23,6 +23,9 @@ module.exports = app => {
   
     // Delete all players
     router.delete("/", players.deleteAll);
+
+    // Add Skill
+    router.post("/addSkills", players.addSkills);
   
     app.use('/api/players', router);
   };

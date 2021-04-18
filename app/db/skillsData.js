@@ -74,7 +74,7 @@ module.exports = {
         "side On",
         "Fielding on boundary",
         "cow corner",
-        "Austrilan stylye catches",
+        "Austrilan style catches",
         "Normal catches",
         "Rapid catches",
         "Cutting the ball",

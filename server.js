@@ -26,12 +26,16 @@ db.sequelize.sync();
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+  res.json({ message: "Welcome to cricket guru application api." });
 });
 
 
 require("./app/routes/turorial.routes")(app);
 require("./app/routes/player.routes")(app);
+require("./app/routes/skill.routes")(app);
+
+var seedSkillData = require('./app/tasks/seedSkillData');
+seedSkillData();
 // set port, listen for requests
 const PORT = process.env.PORT || 8090;
 app.listen(PORT, () => {
