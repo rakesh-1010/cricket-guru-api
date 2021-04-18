@@ -37,19 +37,18 @@ exports.create = (req, res) => {
           err.message || "Some error occurred while creating the Player."
       });
     });
-  
 };
 
 // Retrieve all Players from the database.
 exports.findAll = (req, res) => {
     const name = req.query.name;
     var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
-  
-    Player.findAll({ where: condition,  
+    Player.findAll({ where: condition,
       include: [
         {
           model: Skill,
-          as: "skills"
+          as: "skills",
+          attributes: ["id", "skill_type", "name"]
         },
       ],
     })
@@ -65,7 +64,6 @@ exports.findAll = (req, res) => {
 };
 
 exports.addSkills = (req, res) => {
-  
   req.body.forEach((req) => {
     const playerId = req.playerId;
     const skillId = req.skillId;
@@ -82,7 +80,7 @@ exports.addSkills = (req, res) => {
             console.log("Skill not found!");
             return null;
           }
-  
+
           player.addSkill(skill);
           console.log(`>> added skill id=${skill.id} to Player id=${player.id}`);
           res.send(player);
@@ -94,14 +92,19 @@ exports.addSkills = (req, res) => {
         });
       });
   })
-  
 };
 
 // Find a single Player with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
 
-    Player.findByPk(id)
+    Player.findByPk(id, {include: [
+        {
+          model: Skill,
+          as: "skills",
+          attributes: ["id", "skill_type", "name"]
+        },
+      ]})
       .then(data => {
         res.send(data);
       })

@@ -7,6 +7,7 @@ const Skill = db.skills;
 module.exports = function () {
     Object.keys(SKILLS).forEach(function(skillType) {
         SKILLS[skillType].forEach( function(skill) {
+            console.log(skill);
             Skill.findAndCountAll({
                 where: {
                     skill_type: skillType,
