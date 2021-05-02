@@ -1,6 +1,8 @@
 const db = require("../models");
 const Player = db.players;
 const Skill = db.skills;
+const Fee = db.fees;
+const Attendance = db.attendances;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Player
@@ -23,7 +25,7 @@ exports.create = (req, res) => {
     dob: req.body.dob,
     role: req.body.role,
     batting_style: req.body.batting_style,
-    bowling_style: req.body.bowling_style
+    bowling_style: req.body.bowling_style,
   };
 
   // Save Player in the database
@@ -41,26 +43,34 @@ exports.create = (req, res) => {
 
 // Retrieve all Players from the database.
 exports.findAll = (req, res) => {
-    const name = req.query.name;
-    var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
-    Player.findAll({ where: condition,
-      include: [
-        {
-          model: Skill,
-          as: "skills",
-          attributes: ["id", "skill_type", "name"]
-        },
-      ],
-    })
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving players."
-        });
-      });
+  const name = req.query.name;
+  let condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
+  Player.findAll({ where: condition,
+    include: [
+      {
+        model: Skill,
+        as: "skills",
+        attributes: ["id", "skill_type", "name"]
+      },
+      {
+        model: Fee,
+        as: "fees"
+      },
+      {
+        model: Attendance,
+        as: "attendances"
+      }
+    ],
+  })
+  .then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving players."
+    });
+  });
 };
 
 exports.addSkills = (req, res) => {
@@ -68,7 +78,6 @@ exports.addSkills = (req, res) => {
     const playerId = req.playerId;
     const skillId = req.skillId;
     const rating = req.rating;
-    console.log("--------request-------", req.body);
     return Player.findByPk(playerId)
       .then((player) => {
         if (!player) {
@@ -104,6 +113,14 @@ exports.findOne = (req, res) => {
           as: "skills",
           attributes: ["id", "skill_type", "name"]
         },
+        {
+          model: Fee,
+          as: "fees"
+        },
+        {
+          model: Attendance,
+          as: "attendances"
+        }
       ]})
       .then(data => {
         res.send(data);

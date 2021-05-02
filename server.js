@@ -33,6 +33,8 @@ app.get("/", (req, res) => {
 require("./app/routes/turorial.routes")(app);
 require("./app/routes/player.routes")(app);
 require("./app/routes/skill.routes")(app);
+require("./app/routes/fee.routes")(app);
+require("./app/routes/attendance.routes")(app);
 
 var seedSkillData = require('./app/tasks/seedSkillData');
 seedSkillData();
