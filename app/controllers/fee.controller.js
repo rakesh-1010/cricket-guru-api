@@ -10,7 +10,6 @@ exports.create = (req, res) => {
     });
     return;
   }
-  console.log("------------fees req------", req.body)
   // Create a Fee
   const fee = {
     player_id: req.body.player_id,
