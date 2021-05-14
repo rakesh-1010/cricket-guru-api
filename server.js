@@ -4,6 +4,9 @@ const cors = require("cors");
 
 const app = express();
 
+const seedSkillData = require('./app/tasks/seedSkillData');
+const initialRoles = require('./app/tasks/seedRoles')
+
 var corsOptions = {
   origin: "http://localhost:3000"
 };
@@ -18,7 +21,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // setup db and orm
 const db = require("./app/models");
-db.sequelize.sync();
+db.sequelize.sync({force: true}).then(() => {
+  seedSkillData();
+  initialRoles();
+});
 
 // db.sequelize.sync({ force: true }).then(() => {
 //     console.log("Drop and re-sync db.");
@@ -35,9 +41,9 @@ require("./app/routes/player.routes")(app);
 require("./app/routes/skill.routes")(app);
 require("./app/routes/fee.routes")(app);
 require("./app/routes/attendance.routes")(app);
+require('./app/routes/auth.routes')(app);
+require('./app/routes/user.routes')(app);
 
-var seedSkillData = require('./app/tasks/seedSkillData');
-seedSkillData();
 // set port, listen for requests
 const PORT = process.env.PORT || 8090;
 app.listen(PORT, () => {
